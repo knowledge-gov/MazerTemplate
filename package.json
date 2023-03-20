@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "bestzip": "^2.2.1",
-    "browser-sync": "^2.27.3",
+    "browser-sync": "^2.29.0",
     "browser-sync-webpack-plugin": "^2.0.1",
     "laravel-mix-nunjucks": "^1.1.0",
     "postcss": "^8.3.5",
