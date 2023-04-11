@@ -1,0 +1,82 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+permissions: write-all
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest, windows-latest, macos-latest, android-latest, ios-latest, firefox-latest, chrome-latest, chromium-latest, gcc-7.2.0, github-actions, github-pages
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
+    
+    - name: Node Releasr
+  # You may pin to the exact commit or the version.
+  # uses: PackagrIO/action-releasr-node@4d6804efa2251d080a014f55b486b42b9c266d4b
+      uses: PackagrIO/action-releasr-node@v0.0.1
+      with:
+        # Path to file containing Version string
+        version_metadata_path: package.json
+        # Commit Author
+        author_name: packagrio-bot
+        # Commit Author Email
+        author_email: packagr-io[bot]@users.noreply.github.com
+        # Working Directory
+        cwd: /
+        
+    - name: Release
+        jobs:
+        build:
+          name: Build
+          runs-on: ubuntu-latest
+          steps:
+            # Fetch depth 0 is required for Changelog generation
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                fetch-depth: 2
+
+
+            # ... do your compile, testing, bumpr, releasr steps here.
+
+            - name: Publish Release
+              id: publish
+              uses: packagrio/action-publishr-node@master
+              env:
+                # This is necessary in order to push a commit to the repo
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
+              with:
+                # upload any assets to your github release
+                upload_assets: 'packagr-bumpr-linux-amd64'
+                
+          on: push
+name: Node Code Formatter
+jobs:
+  lint:
+    name: Node Code Formatter
+    runs-on: ubuntu-latest
+    steps:
+    - name: Node Code Formatter
+      uses: MarvinJWendt/run-node-formatter@stable
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
