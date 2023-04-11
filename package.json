@@ -54,6 +54,8 @@
     "jquery": "^3.5.1",
     "summernote": "0.8.18",
     "tinymce": "^5.6.2"
+    "format": "standard --fix"
+    "format": "prettier --write"
   },
   "devDependencies": {
     "bestzip": "^2.2.1",
@@ -72,7 +74,7 @@
       "before:init": ["npm run prodzip"]
     },
     "npm": {
-      "publish": false
+      "publish": true
     },
     "github": {
       "release": true,
